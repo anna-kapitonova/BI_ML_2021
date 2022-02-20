@@ -20,9 +20,21 @@ def binary_classification_metrics(y_pred, y_true):
     FP = ((y_pred == 1) & (y_true == 0)).sum()
     FN = ((y_pred == 0) & (y_true == 1)).sum()
 
-    precision = TP / (TP+FP)
-    recall = TP / (TP+FN)
-    f1 = 2 * precision * recall / (precision + recall)
+    if TP == 0 & FP == 0:
+        precision = 1
+    else:
+        precision = TP / (TP+FP)
+    
+    if TP == 0 & FN == 0:
+        recall = 1
+    else:
+        recall = TP / (TP+FN)
+    
+    if precision == recall == 0:
+        f1 = 1
+    else:
+        f1 = 2 * precision * recall / (precision + recall)
+    
     accuracy = (y_true == y_pred).sum() / len(y_true)
 
     return precision, recall, f1, accuracy

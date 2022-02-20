@@ -117,17 +117,14 @@ class KNNClassifier:
         n_train = distances.shape[1]
         n_test = distances.shape[0]
         prediction = np.zeros(n_test)
+
+        neariest_nbs_ids = np.argsort(distances, axis=1)[:, :self.k]
+        neariest_nbs = self.train_y[neariest_nbs_ids]
+
         for i in range(n_test):
-            neighbours = np.argsort(distances)[i][:self.k]
-            class_1 = 0
-            class_0 = 0
-            for neighbour in neighbours:
-                if self.train_y[neighbour] == 1:
-                    class_1 += 1
-                else:
-                    class_0 += 1
-            if class_1 >= class_0:
-                prediction[i] = 1
+            values, counts = np.unique(neariest_nbs[i], return_counts=True)
+            ind = np.argmax(counts)
+            prediction[i] += values[ind]
         return prediction
 
 
